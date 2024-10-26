@@ -15,13 +15,33 @@ import (
 //	"log"
 )
 
-func TestParser(t *testing.T) {
+func TestParser1(t *testing.T) {
 
 	// http: 'cmd url proto'
 	testLines := make([]SL, 0, 10)
 	testLines = append(testLines, []byte("GET / http/1.1\r\n"))
 	testLines = append(testLines, []byte("GET /index http/1.1\n"))
 	testLines = append(testLines, []byte("GET /index http/1.1\r\n"))
+
+//	fmt.Printf("*** testLines: %d ****\n", len(testLines))
+	for i:= 0; i<len(testLines); i++ {
+		inp:= testLines[i]
+//		fmt.Printf("\nline[%d]: %s", i, inp)
+		res, err := ParseFLHttp(inp)
+		if err != nil {
+			if i != 1 {t.Errorf("error -- line: %d ->parseFLHttp: %v\n",i, err)}
+		} else {
+			if len(res.cmd) == 0 {t.Errorf("error -- line: %d ->parseFLHttp no cmd\n",i)}
+		}
+	}
+//	fmt.Println("*** success ***")
+}
+
+func TestParser2(t *testing.T) {
+
+	// http: 'cmd url proto'
+	testLines := make([]SL, 0, 10)
+	testLines = append(testLines, []byte("GET /index?key1=val1 http/1.1\r\n"))
 
 //	fmt.Printf("*** testLines: %d ****\n", len(testLines))
 	for i:= 0; i<len(testLines); i++ {
